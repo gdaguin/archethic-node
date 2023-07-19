@@ -316,7 +316,7 @@ defmodule Archethic.Utils.Regression.Playbook do
     )
 
     receive do
-      %{"transactionConfirmed" => %{"nbConfirmations" => 1}} ->
+      %{"transactionConfirmed" => %{"nbConfirmations" => n}} when n > 0 ->
         :ok
 
       %{"transactionError" => %{"reason" => reason}} ->
@@ -324,6 +324,9 @@ defmodule Archethic.Utils.Regression.Playbook do
 
       {:error, reason} ->
         {:error, reason}
+
+      unknown_msg ->
+        Logger.warn("await_replication received an unknown message: #{inspect(unknown_msg)}")
     end
   end
 
